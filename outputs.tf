@@ -15,5 +15,5 @@ output "private_subnets_list_id" {
 }
 
 output "security_groups_list_id" {
-  value = concat(aws_security_group.public.*.id,aws_security_group.private.*.id)
+  value = concat(aws_security_group.public.*.id, aws_security_group.private.*.id)
 }

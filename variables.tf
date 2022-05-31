@@ -69,7 +69,7 @@ variable "instance_type" {
 
 variable "ssh_public_key" {
   type        = string
-  description = "Public key to import ot EC2"  
+  description = "Public key to import ot EC2"
 }
 
 variable "instance_number_to_allow_ssh" {

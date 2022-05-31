@@ -97,24 +97,24 @@ EOF
 }
 
 resource aws_autoscaling_group this {
-  name                 = var.vm_name
-  min_size             = 1
-  max_size             = 2
-  desired_capacity     = 1
+  name = var.vm_name
+  min_size = 1
+  max_size = 2
+  desired_capacity = 1
   launch_configuration = aws_launch_configuration.this.name
-  vpc_zone_identifier  = aws_subnet.private.*.id
-  target_group_arns    = [aws_lb_target_group.nlb.arn,aws_lb_target_group.web.arn]
+  vpc_zone_identifier = aws_subnet.private.*.id
+  target_group_arns = [aws_lb_target_group.nlb.arn, aws_lb_target_group.web.arn]
 
-  health_check_type    = "ELB"
+  health_check_type = "ELB"
 
   lifecycle {
-    ignore_changes  = [launch_configuration,tags,]
+    ignore_changes = [launch_configuration, tags, ]
   }
 
   tags = [
     {
-      "key"                 = "Name of ASG"
-      "value"               = "${var.vm_name}"
+      "key" = "Name of ASG"
+      "value" = "${var.vm_name}"
       "propagate_at_launch" = true
     }
   ]
@@ -143,7 +143,7 @@ resource "aws_cloudwatch_metric_alarm" "web_cpu_alarm_up" {
   }
 
   alarm_description = "This metric monitor EC2 instance CPU utilization"
-  alarm_actions = [ aws_autoscaling_policy.web_policy_up.arn ]
+  alarm_actions = [aws_autoscaling_policy.web_policy_up.arn]
 }
 
 resource "aws_autoscaling_policy" "web_policy_down" {
@@ -169,7 +169,7 @@ resource "aws_cloudwatch_metric_alarm" "web_cpu_alarm_down" {
   }
 
   alarm_description = "This metric monitor EC2 instance CPU utilization"
-  alarm_actions = [ aws_autoscaling_policy.web_policy_down.arn ]
+  alarm_actions = [aws_autoscaling_policy.web_policy_down.arn]
 }
 
 # resource "aws_autoscaling_attachment" "nlb" {
@@ -183,11 +183,11 @@ resource "aws_cloudwatch_metric_alarm" "web_cpu_alarm_down" {
 ####################################################
 
 resource aws_lb_target_group web {
-  name        = "web"
-  port        = 80
+  name = "web"
+  port = 80
   target_type = "instance"
-  protocol    = "HTTP"
-  vpc_id      = aws_vpc.this.id
+  protocol = "HTTP"
+  vpc_id = aws_vpc.this.id
 }
 
 # resource aws_alb_target_group_attachment web {
@@ -197,30 +197,30 @@ resource aws_lb_target_group web {
 # }
 
 resource aws_lb alb {
-  name               = "ALB"
-  internal           = false
+  name = "ALB"
+  internal = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.public.id]
-  subnets            = aws_subnet.public.*.id
+  security_groups = [aws_security_group.public.id]
+  subnets = aws_subnet.public.*.id
 }
 
 resource aws_lb_listener http {
   load_balancer_arn = aws_lb.alb.arn
-  port              = "80"
-  protocol          = "HTTP"
+  port = "80"
+  protocol = "HTTP"
 
   default_action {
-    type              = "forward"
-    target_group_arn  = aws_lb_target_group.web.arn
+    type = "forward"
+    target_group_arn = aws_lb_target_group.web.arn
   }
 }
 
 resource aws_lb_listener_rule static {
   listener_arn = aws_lb_listener.http.arn
-  priority     = 100
+  priority = 100
 
   action {
-    type             = "forward"
+    type = "forward"
     target_group_arn = aws_lb_target_group.web.arn
 
   }

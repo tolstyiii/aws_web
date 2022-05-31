@@ -84,7 +84,7 @@ resource aws_nat_gateway this {
 
   allocation_id = element(aws_eip.nat.*.id, count.index)
 
-  subnet_id = element(aws_subnet.public[*].id,count.index)
+  subnet_id = element(aws_subnet.public[*].id, count.index)
 
   tags = merge(
     {
@@ -116,7 +116,7 @@ resource aws_route_table public {
 
 resource aws_route_table private {
   count = var.enable_nat_gateway ? length(var.private_subnets) : 0
-  
+
   vpc_id = aws_vpc.this.id
 
   route {
@@ -134,15 +134,15 @@ resource aws_route_table private {
 
 resource aws_route_table_association public {
   count = length(var.public_subnets)
-  
-  subnet_id = aws_subnet.public[count.index].id
+
+  subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.public.id
 }
 
 resource aws_route_table_association private {
   count = length(var.private_subnets)
-  
-  subnet_id = aws_subnet.private[count.index].id
+
+  subnet_id      = aws_subnet.private[count.index].id
   route_table_id = aws_route_table.private[count.index].id
 }
 
@@ -154,35 +154,35 @@ resource aws_security_group private {
   description = "Allow HTTP/HTTPS and management inbound traffic"
   vpc_id      = aws_vpc.this.id
 
-##################### Egress rules
+  ##################### Egress rules
 
   egress {
-    protocol   = "-1"
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
-    from_port  = 0
-    to_port    = 0
+    from_port   = 0
+    to_port     = 0
   }
 
-##################### Ingress rules
+  ##################### Ingress rules
   ingress {
-    protocol   = "-1"
+    protocol    = "-1"
     cidr_blocks = [var.vpc_cidr]
-    from_port  = 0
-    to_port    = 0
+    from_port   = 0
+    to_port     = 0
   }
 
   ingress {
-    protocol   = "tcp"
+    protocol    = "tcp"
     cidr_blocks = [var.source_ssh_ip_enabled]
-    from_port  = 22
-    to_port    = 22
+    from_port   = 22
+    to_port     = 22
   }
 
   ingress {
-    protocol   = "tcp"
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    from_port  = 80
-    to_port    = 80
+    from_port   = 80
+    to_port     = 80
   }
 
   tags = merge(
@@ -198,28 +198,28 @@ resource aws_security_group public {
   description = "Allow HTTP inbound traffic"
   vpc_id      = aws_vpc.this.id
 
-##################### Egress rules
+  ##################### Egress rules
   egress {
-    protocol   = "-1"
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
-    from_port  = 0
-    to_port    = 0
+    from_port   = 0
+    to_port     = 0
   }
 
-##################### Ingress rules
+  ##################### Ingress rules
 
   ingress {
-    protocol   = "-1"
+    protocol    = "-1"
     cidr_blocks = [var.vpc_cidr]
-    from_port  = 0
-    to_port    = 0
+    from_port   = 0
+    to_port     = 0
   }
 
   ingress {
-    protocol   = "tcp"
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    from_port  = 80
-    to_port    = 80
+    from_port   = 80
+    to_port     = 80
   }
 
   # ingress {
